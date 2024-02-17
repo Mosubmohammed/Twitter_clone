@@ -2,10 +2,25 @@ from django.shortcuts import render,redirect
 from django.shortcuts import get_object_or_404, render,redirect
 from .models import *
 from django.contrib import messages
+from .forms import *
 
 # Create your views here.
 def home(request):
-    return render(request,'home.html',{})
+    if request.user.is_authenticated:
+        form=MeepForm(request.POST or None)
+        if request.method=='POST':
+            if form.is_valid():
+                meep=form.save(commit=False)
+                meep.user=request.user
+                meep.save()
+                messages.success(request,f"Your Meep Has Been Posted!")
+                return redirect('home')
+        meeps = Meep.objects.all().order_by('create_at')
+        return render(request, 'home.html', {"meeps": meeps,"form": form})
+    else:
+        meeps = Meep.objects.all().order_by('create_at')
+        return render(request, 'home.html', {"meeps":meeps})
+
 
 
 def profile_list(request):
@@ -20,6 +35,8 @@ def profile(request,pk):
     if request.user.is_authenticated:
         
         profile=Profile.objects.get(user_id=pk)
+        meeps=Meep.objects.filter(user_id=pk)
+        
         #post form logic
         if request.method=="POST":
             #get currunt user id
@@ -33,7 +50,7 @@ def profile(request,pk):
             current_user_profile.save()
             
 
-        return render(request, 'profile.html',{'profile':profile})
+        return render(request, 'profile.html',{'profile':profile},{"meeps":meeps})
     else:
         messages.success(request,("you must be logged in"))
         return redirect('home')
