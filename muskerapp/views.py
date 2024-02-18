@@ -2,6 +2,7 @@ from django.shortcuts import render,redirect
 from django.shortcuts import get_object_or_404, render,redirect
 from .models import *
 from django.contrib import messages
+from django.contrib.auth import authenticate ,login,logout
 from .forms import *
 
 # Create your views here.
@@ -54,3 +55,22 @@ def profile(request,pk):
     else:
         messages.success(request,("you must be logged in"))
         return redirect('home')
+    
+def login_user(request):
+    if request.method=="POST":
+        username=request.POST['username']
+        password=request.POST['password']
+        user=authenticate(request,username=username,password=password)
+        if user is not None:
+            login(request,user)
+            messages.success(request,("you have been logged in"))
+            return redirect('home')
+        else:
+            messages.success(request,("invalid username or password"))
+            return redirect('login')
+    else:
+        return render(request, 'login.html')
+def logout_user(request):
+    logout(request)
+    messages.success(request,("you have been logged out"))
+    return redirect('home')
