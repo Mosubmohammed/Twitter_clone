@@ -9,7 +9,9 @@
 
 <h1>Meeps!</h1>
 <br/>
-
+{% if profile.profile_image %}
+<img src={{profile.profile_image.url}}>
+{% endif %}
 
 {% for meep in meeps %}
 <div class="alert alert-dark" role="alert">
