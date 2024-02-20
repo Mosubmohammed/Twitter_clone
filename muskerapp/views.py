@@ -19,7 +19,7 @@ def home(request):
                 meep.save()
                 messages.success(request,f"Your Meep Has Been Posted!")
                 return redirect('home')
-        meeps = Meep.objects.all().order_by('create_at')
+        meeps = Meep.objects.all().order_by('-create_at')
         return render(request, 'home.html', {"meeps": meeps,"form": form})
     else:
         meeps = Meep.objects.all().order_by('create_at')

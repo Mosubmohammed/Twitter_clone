@@ -1,40 +1,61 @@
-{% extends "base.html" %}
-
+{% extends "base.html" %} 
+{%load static%}
 {%block content%}
 
 <div class="container text-center">
-    <div class="row">
+  <div class="row">
     <div class="col-8">
+      <h1>Meeps!</h1>
+      <br />
+      {% if profile.profile_image %}
+      <img src="{{profile.profile_image.url}}" />
+      {% endif %} {% for meep in meeps %}
+      <div class="alert alert-dark" role="alert">
+        <div class="container">
+          <div class="row">
+            <div class="col-1">
+              {% if meep.user.profile.profile_image %}
+              <img
+                src="{{ meep.user.profile.profile_image.url }}"
+                width="50"
+                height="50"
+                class="rounded-circle"
+                alt="{{ profile.user.username }}"
+              />
 
+              {% else %}
+              <img
+                src="{% static 'images/default_profile_pic.png' %}"
+                width="50"
+                height="50"
+                class="rounded-circle"
+                alt="{{ profile.user.username }}"
+              />
+              {% endif %}
+            </div>
 
-<h1>Meeps!</h1>
-<br/>
-{% if profile.profile_image %}
-<img src={{profile.profile_image.url}}>
-{% endif %}
+            <div class="col-11">
+              {{meep.body}}<br />
+              <small class="text-muted">
+                {{meep.create_at}} By @{{meep.user.username}}
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="col-4">
+      <br /><br />
+      {%if form%}
+      <form method="POST">
+        {%csrf_token%} {{form.as_p}}
 
-{% for meep in meeps %}
-<div class="alert alert-dark" role="alert">
-    {{meep.body}}<br/>
-    <small class="text-muted ">
-        {{meep.create_at}}  
-        By @{{meep.user.username}}
-    </small>
-  </div>
-{% endfor %}
-
-</div>
-<div class="col-4">
-    <br/><br/>
-{%if form%}
-    <form method="POST">
-        {%csrf_token%}
-        {{form.as_p}}
-
-        <button type="submit" class="btn btn-secondary ">Post Meep!</button>
+        <button type="submit" class="btn btn-secondary">Post Meep!</button>
       </form>
       {%endif%}
+    </div>
+
+    {%endblock%}
+  </div>
 </div>
-
-
-{%endblock%}
