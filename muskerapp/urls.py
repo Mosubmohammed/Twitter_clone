@@ -11,4 +11,5 @@ urlpatterns = [
     path('logout',logout_user, name='logout'),
     path('register ',register_user, name='register'),
     path('update_user ',update_user, name='update_user'),
+    path('meep_like/<int:pk>',meep_like, name='meep_like'),
 ]

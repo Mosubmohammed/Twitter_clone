@@ -119,4 +119,17 @@ def update_user(request):
     else:
         messages.success(request,("you must be logged in"))
         return redirect('home')
-    
+
+def meep_like(request,pk):
+    if request.user.is_authenticated:
+        meep=get_object_or_404(Meep,id=pk)
+        if meep.likes.filter(id=request.user.id):
+            meep.likes.remove(request.user)
+        else:
+            meep.likes.add(request.user)
+        
+        return redirect(request.META.get("HTTP_REFERER"))
+        
+    else:
+        messages.success(request,("you must be logged in"))
+        return redirect('home')
