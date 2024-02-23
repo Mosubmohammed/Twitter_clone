@@ -41,7 +41,10 @@
                 <a href="{% url 'meep_like' meep.id%}">
                   <i class="fa-regular fa-heart" style="color: red"></i>
                 </a>
-                {%endif%}
+                {%endif%} &nbsp;&nbsp;
+                <a href="{% url 'meep_show' meep.id %}">
+                  <i class="fa-solid fa-share" style="color: gray"></i>
+                </a>
               </small>
             </div>
           </div>

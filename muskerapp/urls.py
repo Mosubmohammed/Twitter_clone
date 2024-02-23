@@ -12,4 +12,5 @@ urlpatterns = [
     path('register ',register_user, name='register'),
     path('update_user ',update_user, name='update_user'),
     path('meep_like/<int:pk>',meep_like, name='meep_like'),
+    path('meep_show/<int:pk>',meep_show, name='meep_show'),
 ]
