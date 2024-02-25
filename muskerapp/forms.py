@@ -5,10 +5,15 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 class ProfilePicForm(forms.ModelForm):
     profile_image=forms.ImageField(label="Profile Image")
+    profile_bio=forms.CharField(label="",widget=forms.Textarea(attrs={'class':'form-control', 'placeholder':'Profile Bio'}))
+    homepage_link=forms.CharField(label="",widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'Website Link'}))
+    facebook_link=forms.CharField(label="",widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'facebook Link'}))
+    instagram_link=forms.CharField(label="",widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'Instagram Link'}))
+    linkedin_link=forms.CharField(label="",widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'linkedin Link'}))
     
     class Meta:
         model=Profile
-        fields=("profile_image", )
+        fields=("profile_image", "profile_bio","homepage_link","facebook_link","instagram_link","linkedin_link")
         
 
 
