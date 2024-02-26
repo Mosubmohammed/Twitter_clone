@@ -59,6 +59,22 @@ def profile(request,pk):
         messages.success(request,("you must be logged in"))
         return redirect('home')
     
+    
+    
+def followers(request, pk):
+	if request.user.is_authenticated:
+		if request.user.id == pk:
+			profiles = Profile.objects.get(user_id=pk)
+			return render(request, 'followers.html', {"profiles":profiles})
+		else:
+			messages.success(request, ("That's Not Your Profile Page..."))
+			return redirect('home')	
+	else:
+		messages.success(request, ("You Must Be Logged In To View This Page..."))
+		return redirect('home')
+    
+    
+    
 def login_user(request):
     if request.method=="POST":
         username=request.POST['username']
@@ -141,3 +157,32 @@ def meep_show(request, pk):
 	else:
 		messages.success(request, ("That Meep Does Not Exist..."))
 		return redirect('home')	
+
+
+def unfollow(request,pk):
+    if request.user.is_authenticated:
+        profile=Profile.objects.get(user_id=pk)
+        request.user.profile.Follows.remove(profile)
+        request.user.profile.save()
+        messages.success(request,(f"You have successfully Unfollowed {profile.user.username}"))
+        return redirect(request.META.get("HTTP_REFERER"))	
+        
+
+    else:
+        messages.success(request,("you must be logged in"))
+        return redirect('home')	
+    
+def follow(request,pk):
+    if request.user.is_authenticated:
+        profile=Profile.objects.get(user_id=pk)
+        request.user.profile.Follows.add(profile)
+        request.user.profile.save()
+        messages.success(request,(f"You have successfully followed {profile.user.username}"))
+        return redirect(request.META.get("HTTP_REFERER"))	
+        
+
+    else:
+        messages.success(request,("you must be logged in"))
+        return redirect('home')	
+    
+    
