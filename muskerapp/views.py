@@ -74,6 +74,18 @@ def followers(request, pk):
 		return redirect('home')
     
     
+def follows(request, pk):
+	if request.user.is_authenticated:
+		if request.user.id == pk:
+			profiles = Profile.objects.get(user_id=pk)
+			return render(request, 'follows.html', {"profiles":profiles})
+		else:
+			messages.success(request, ("That's Not Your Profile Page..."))
+			return redirect('home')	
+	else:
+		messages.success(request, ("You Must Be Logged In To View This Page..."))
+		return redirect('home')
+    
     
 def login_user(request):
     if request.method=="POST":
@@ -186,3 +198,50 @@ def follow(request,pk):
         return redirect('home')	
     
     
+def delete_meep(request,pk):
+    if request.user.is_authenticated:
+        meep=get_object_or_404(Meep,id=pk)
+        if request.user.username == meep.user.username:
+            meep.delete()
+            messages.success(request,(f"Your Meep Has Been Deleted"))
+            return redirect(request.META.get("HTTP_REFERER"))	
+        else:
+            messages.success(request,(f"You Don't Own this Meep"))
+            return redirect('home')	
+            
+            
+    else:
+        messages.success(request,(f"Please log in To continue"))
+        return redirect(request.META.get("HTTP_REFERER"))	
+        
+        
+def edit_meep(request,pk):
+    meep=get_object_or_404(Meep,id=pk)
+    if request.user.is_authenticated:
+        if request.user.username == meep.user.username:
+
+            form=MeepForm(request.POST or None,instance=meep)
+            if request.method=='POST':
+                if form.is_valid():
+                    meep=form.save(commit=False)
+                    meep.user=request.user
+                    meep.save()
+                    messages.success(request,f"Your Meep Has Been Updated!")
+                    return redirect('home')
+            else:
+                return render(request, 'edit_meep.html',{'form':form,'meep':meep})
+
+        else:
+            messages.success(request,(f"You Don't Own this Meep"))
+            return redirect('home')	     
+    else:
+        messages.success(request,(f"Please log in To continue"))
+        return redirect('home')	
+    
+def search(request):
+    if request.method=="POST":
+        search=request.POST['search']
+        searched = Meep.objects.filter(body__contains=search)
+        return render(request,'search.html',{'search':search,'searched':searched})
+    else:
+        return render(request,'search.html',{})
